@@ -21,21 +21,17 @@ public class TaskEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private UserEntity author;
 
@@ -43,6 +39,6 @@ public class TaskEntity {
     @JoinColumn(name = "assignee_id")
     private UserEntity assignee;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 }

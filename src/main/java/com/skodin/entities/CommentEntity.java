@@ -16,14 +16,13 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String content;
 
-    @ManyToOne(optional = false)
+    @ManyToOne()
     @JoinColumn(name = "author_id")
     private UserEntity author;
 
-    @ManyToOne(optional = false)
+    @ManyToOne()
     @JoinColumn(name = "task_id")
     private TaskEntity task;
 }

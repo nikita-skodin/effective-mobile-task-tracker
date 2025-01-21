@@ -28,11 +28,8 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Email(message = "email is invalid")
-    @NotBlank(message = "email cannot be blank")
     String email;
 
-    // validate in userValidator
     String password;
 
     @Enumerated(EnumType.STRING)
@@ -41,10 +38,10 @@ public class UserEntity implements UserDetails {
     @Column(name = "activation_code")
     String activationCode;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TaskEntity> authoredTasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
     @Override
