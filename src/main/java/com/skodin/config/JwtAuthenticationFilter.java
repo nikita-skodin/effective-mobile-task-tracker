@@ -1,6 +1,6 @@
 package com.skodin.config;
 
-import com.skodin.services.JwtService;
+import com.skodin.services.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

@@ -44,6 +44,14 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
+    public UserEntity(Long id, String email, String password, Role role, String activationCode) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.activationCode = activationCode;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

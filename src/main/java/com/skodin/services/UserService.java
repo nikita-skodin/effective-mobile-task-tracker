@@ -53,10 +53,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity updateEnable(UserEntity user) {
+    public void updateEnable(UserEntity user) {
         user.setActivationCode("enable");
         userRepository.save(user);
-        return user;
     }
 
     @Transactional

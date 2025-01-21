@@ -2,6 +2,7 @@ package com.skodin.DTOs.auth;
 
 import com.skodin.enums.Role;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,8 @@ public class RegisterRequest {
     @NotBlank(message = "email cannot be blank")
     private String email;
 
+    @NotBlank(message = "password cannot be blank")
+    @Min(value = 8L, message = "password length must be more than 8 chars")
     private String password;
 
     private Role role;

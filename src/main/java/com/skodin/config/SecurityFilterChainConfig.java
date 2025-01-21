@@ -35,7 +35,7 @@ public class SecurityFilterChainConfig {
                                         "/actuator/**",
                                         "/error",
                                         "/v3/**",
-                                        "/api/auth/**",
+                                        "/api/auth/authenticate",
                                         "/swagger-ui/**")
                                 .permitAll()
                                 .anyRequest()

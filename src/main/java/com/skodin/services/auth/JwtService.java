@@ -1,4 +1,4 @@
-package com.skodin.services;
+package com.skodin.services.auth;
 
 import com.skodin.DTOs.auth.AuthenticationResponse;
 import com.skodin.exceptions.InvalidToken;
