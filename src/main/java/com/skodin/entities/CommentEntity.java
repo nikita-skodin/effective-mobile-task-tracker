@@ -1,4 +1,4 @@
-package com.skodin.models;
+package com.skodin.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

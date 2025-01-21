@@ -1,4 +1,4 @@
-package com.skodin.models;
+package com.skodin.entities;
 
 import com.skodin.enums.Role;
 import jakarta.persistence.*;
