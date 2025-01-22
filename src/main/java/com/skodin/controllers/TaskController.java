@@ -1,11 +1,14 @@
 package com.skodin.controllers;
 
 import com.skodin.DTOs.TaskDTO;
+import com.skodin.entities.TaskEntity;
 import com.skodin.mappers.EntityMapper;
 import com.skodin.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +27,21 @@ public class TaskController extends MainController {
 
     private final TaskService taskService;
     private final EntityMapper taskEntityMapper;
+
+    @GetMapping
+    public ResponseEntity<Page<TaskDTO>> getAllTasks(
+            Pageable pageable,
+            @RequestParam(required = false) String filter
+    ) {
+        Page<TaskEntity> tasksPage = taskService.findAllWithPaginationAndFilter(pageable, filter);
+        Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
+        return ResponseEntity.ok(tasksDTOPage);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
+        return ResponseEntity.ok(taskEntityMapper.getDTO(taskService.findById(id)));
+    }
 
     @PostMapping
     @PreAuthorize("@CheckPermissionsService.permitAdmin(#userDetails)")

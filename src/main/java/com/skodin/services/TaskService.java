@@ -6,6 +6,8 @@ import com.skodin.exceptions.NotFoundException;
 import com.skodin.mappers.EntityMapper;
 import com.skodin.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,13 @@ public class TaskService {
     @Transactional
     public <S extends TaskEntity> S saveAndFlush(S entity) {
         return taskRepository.saveAndFlush(entity);
+    }
+
+    public Page<TaskEntity> findAllWithPaginationAndFilter(Pageable pageable, String filter) {
+        if (filter != null && !filter.isEmpty()) {
+            return taskRepository.findByTitleContainingIgnoreCase(filter, pageable);
+        }
+        return taskRepository.findAll(pageable);
     }
 
     @Transactional
