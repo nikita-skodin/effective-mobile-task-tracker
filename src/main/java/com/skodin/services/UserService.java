@@ -1,12 +1,10 @@
 package com.skodin.services;
 
-import com.skodin.exceptions.ForbiddenException;
-import com.skodin.exceptions.NotFoundException;
 import com.skodin.entities.UserEntity;
+import com.skodin.exceptions.NotFoundException;
 import com.skodin.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +17,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public static UserEntity getCurrentUser() {
-        Object principal = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        return (UserEntity) principal;
-    }
-
     public List<UserEntity> findAll() {
         return userRepository.findAll();
     }
@@ -37,6 +26,7 @@ public class UserService {
                 () -> new NotFoundException(String.format("User with id %d is not found", aLong)));
     }
 
+    @Transactional(readOnly = true)
     public UserEntity findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new NotFoundException(String.format("User with email %s not found", email)));

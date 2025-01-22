@@ -38,10 +38,10 @@ public class UserEntity implements UserDetails {
     @Column(name = "activation_code")
     String activationCode;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<TaskEntity> authoredTasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.REMOVE)
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
     public UserEntity(Long id, String email, String password, Role role, String activationCode) {

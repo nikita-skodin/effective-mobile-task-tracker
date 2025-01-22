@@ -1,5 +1,6 @@
 package com.skodin.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.skodin.enums.Priority;
@@ -42,5 +43,6 @@ public class TaskDTO {
     @Min(1L)
     Long assigneeId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     List<CommentDTO> comments = new ArrayList<>();
 }

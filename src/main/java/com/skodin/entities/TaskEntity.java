@@ -39,6 +39,6 @@ public class TaskEntity {
     @JoinColumn(name = "assignee_id")
     private UserEntity assignee;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
     private List<CommentEntity> comments = new ArrayList<>();
 }
