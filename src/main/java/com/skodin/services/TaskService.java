@@ -39,11 +39,6 @@ public class TaskService {
     }
 
     @Transactional
-    public void deleteById(Long aLong) {
-        taskRepository.deleteById(aLong);
-    }
-
-    @Transactional
     public TaskEntity create(TaskDTO taskDTO) {
         TaskEntity taskEntity = taskEntityMapper.getEntity(new TaskEntity(), taskDTO);
         return taskRepository.save(taskEntity);
@@ -55,5 +50,13 @@ public class TaskService {
         taskDTO.setComments(entity.getComments().stream().map(taskEntityMapper::getDTO).toList());
         entity = taskEntityMapper.getEntity(entity, taskDTO);
         return entity;
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        if (!taskRepository.existsById(id)) {
+            throw new NotFoundException("Task with id: " + id + " does not exist");
+        }
+        taskRepository.deleteById(id);
     }
 }

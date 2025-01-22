@@ -51,4 +51,16 @@ public class TaskController extends MainController {
                 .body(taskEntityMapper.getDTO(taskService.update(task)));
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("@CheckPermissionsService.permitAdmin(#userDetails)")
+    public ResponseEntity<Boolean> deleteTask(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
+        taskService.deleteById(id);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(true);
+    }
+
 }
