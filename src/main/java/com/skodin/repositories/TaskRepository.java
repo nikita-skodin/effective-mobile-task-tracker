@@ -36,5 +36,5 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
     @Query(value = "SELECT EXISTS (SELECT 1 FROM tasks WHERE id = :id AND assignee_id = :assigneeId)",
             nativeQuery = true)
-    Boolean existsByIdAndAssigneeId(@Param("id") Long id, @Param("userId") Long assigneeId);
+    Boolean existsByIdAndAssigneeId(@Param("id") Long id, @Param("assigneeId") Long assigneeId);
 }
