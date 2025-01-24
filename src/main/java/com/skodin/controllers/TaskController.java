@@ -50,7 +50,7 @@ public class TaskController extends MainController {
             Pageable pageable,
             @RequestParam(required = false) String filter
     ) {
-        Long authorId = getUserIdFromPrincipal(userDetails); // Метод для получения ID пользователя
+        Long authorId = getUserIdFromPrincipal(userDetails);
         Page<TaskEntity> tasksPage = taskService.findTasksByAuthor(authorId, pageable, filter);
         Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
         return ResponseEntity.ok(tasksDTOPage);
@@ -62,7 +62,7 @@ public class TaskController extends MainController {
             Pageable pageable,
             @RequestParam(required = false) String filter
     ) {
-        Long assigneeId = getUserIdFromPrincipal(userDetails); // Метод для получения ID пользователя
+        Long assigneeId = getUserIdFromPrincipal(userDetails);
         Page<TaskEntity> tasksPage = taskService.findTasksByAssignee(assigneeId, pageable, filter);
         Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
         return ResponseEntity.ok(tasksDTOPage);
