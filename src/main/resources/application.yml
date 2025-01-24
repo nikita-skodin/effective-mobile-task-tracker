@@ -23,6 +23,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        javax.cache:
+          provider: org.ehcache.jsr107.EhcacheCachingProvider
+          uri: ehcache.xml
+        cache:
+          use_query_cache: true
+          use_second_level_cache: true
+          region.factory_class: jcache
 
   flyway:
     enabled: true
