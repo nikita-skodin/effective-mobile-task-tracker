@@ -56,7 +56,7 @@ public class TaskController extends MainController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("@CheckPermissionsService.permitAdmin(#userDetails)")
+    @PreAuthorize("@CheckPermissionsService.permitUserToTask(#userDetails, #id)")
     public ResponseEntity<TaskDTO> updateTask(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id,
@@ -66,7 +66,7 @@ public class TaskController extends MainController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(taskEntityMapper.getDTO(taskService.update(task)));
+                .body(taskEntityMapper.getDTO(taskService.update(task, userDetails)));
     }
 
     @DeleteMapping("/{id}")

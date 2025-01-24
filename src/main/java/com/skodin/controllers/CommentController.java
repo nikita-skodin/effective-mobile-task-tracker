@@ -30,12 +30,11 @@ public class CommentController extends MainController {
     private final CommentService commentService;
 
     @PostMapping
-    @PreAuthorize("@CheckPermissionsService.permitAdmin(#userDetails)")
+    @PreAuthorize("@CheckPermissionsService.permitUserToTask(#userDetails, #commentDTO.getTaskId())")
     public ResponseEntity<CommentDTO> createComment(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody CommentDTO commentDTO,
             BindingResult bindingResult) {
-
         commentDTO.setAuthorId(((UserEntity) userDetails).getId());
 
         return ResponseEntity

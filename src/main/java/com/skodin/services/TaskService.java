@@ -2,12 +2,15 @@ package com.skodin.services;
 
 import com.skodin.DTOs.TaskDTO;
 import com.skodin.entities.TaskEntity;
+import com.skodin.entities.UserEntity;
+import com.skodin.enums.Role;
 import com.skodin.exceptions.NotFoundException;
 import com.skodin.mappers.EntityMapper;
 import com.skodin.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,10 +57,15 @@ public class TaskService {
     }
 
     @Transactional
-    public TaskEntity update(TaskDTO taskDTO) {
+    public TaskEntity update(TaskDTO taskDTO, UserDetails userDetails) {
+        UserEntity user = (UserEntity) userDetails;
         TaskEntity entity = findById(taskDTO.getId());
         taskDTO.setComments(entity.getComments().stream().map(taskEntityMapper::getDTO).toList());
-        entity = taskEntityMapper.getEntity(entity, taskDTO);
+        if (user.getRole() == Role.USER) {
+            entity.setStatus(taskDTO.getStatus());
+        } else if (user.getRole() == Role.ADMIN) {
+            entity = taskEntityMapper.getEntity(entity, taskDTO);
+        }
         return entity;
     }
 
