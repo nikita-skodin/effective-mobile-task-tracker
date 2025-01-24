@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "tasks")
 public class TaskEntity {
 
@@ -32,13 +33,16 @@ public class TaskEntity {
     private Priority priority;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "author_id")
     private UserEntity author;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "assignee_id")
     private UserEntity assignee;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
     private List<CommentEntity> comments = new ArrayList<>();
 }

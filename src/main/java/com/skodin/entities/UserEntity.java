@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -40,9 +41,11 @@ public class UserEntity implements UserDetails {
     String activationCode;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
     private List<TaskEntity> authoredTasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
     private List<TaskEntity> assignedTasks = new ArrayList<>();
 
     public UserEntity(Long id, String email, String password, Role role, String activationCode) {

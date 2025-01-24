@@ -4,6 +4,7 @@ import com.skodin.DTOs.ErrorDTO;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Map;
 
+@Log4j2
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Controller
@@ -25,6 +27,7 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
 
     @RequestMapping(PATH)
     public ResponseEntity<ErrorDTO> error(WebRequest webRequest) {
+        log.info("Handling error request at path: {}", PATH);
 
         Map<String, Object> attributes = errorAttributes.getErrorAttributes(
                 webRequest,
@@ -32,8 +35,13 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
         );
 
         Integer status = (Integer) attributes.get("status");
-        return ResponseEntity
+        log.debug("Extracted error attributes: status={}, message={}", status, attributes.get("message"));
+
+        ResponseEntity<ErrorDTO> response = ResponseEntity
                 .status(status)
                 .body(new ErrorDTO(HttpStatus.resolve(status), (String) attributes.get("message")));
+
+        log.info("Returning error response with status: {} and message: {}", status, attributes.get("message"));
+        return response;
     }
 }

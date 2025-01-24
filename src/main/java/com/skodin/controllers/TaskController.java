@@ -34,14 +34,19 @@ public class TaskController extends MainController {
             Pageable pageable,
             @RequestParam(required = false) String filter
     ) {
+        log.info("Fetching all tasks with filter: {} and pageable: {}", filter, pageable);
         Page<TaskEntity> tasksPage = taskService.findAllWithPaginationAndFilter(pageable, filter);
         Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
+        log.debug("Found {} tasks", tasksPage.getTotalElements());
         return ResponseEntity.ok(tasksDTOPage);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
-        return ResponseEntity.ok(taskEntityMapper.getDTO(taskService.findById(id)));
+        log.info("Fetching task with ID: {}", id);
+        TaskDTO taskDTO = taskEntityMapper.getDTO(taskService.findById(id));
+        log.debug("Fetched task: {}", taskDTO);
+        return ResponseEntity.ok(taskDTO);
     }
 
     @GetMapping("/author")
@@ -51,8 +56,10 @@ public class TaskController extends MainController {
             @RequestParam(required = false) String filter
     ) {
         Long authorId = getUserIdFromPrincipal(userDetails);
+        log.info("Fetching tasks for author ID: {} with filter: {} and pageable: {}", authorId, filter, pageable);
         Page<TaskEntity> tasksPage = taskService.findTasksByAuthor(authorId, pageable, filter);
         Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
+        log.debug("Found {} tasks for author ID: {}", tasksPage.getTotalElements(), authorId);
         return ResponseEntity.ok(tasksDTOPage);
     }
 
@@ -63,8 +70,10 @@ public class TaskController extends MainController {
             @RequestParam(required = false) String filter
     ) {
         Long assigneeId = getUserIdFromPrincipal(userDetails);
+        log.info("Fetching tasks for assignee ID: {} with filter: {} and pageable: {}", assigneeId, filter, pageable);
         Page<TaskEntity> tasksPage = taskService.findTasksByAssignee(assigneeId, pageable, filter);
         Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
+        log.debug("Found {} tasks for assignee ID: {}", tasksPage.getTotalElements(), assigneeId);
         return ResponseEntity.ok(tasksDTOPage);
     }
 
@@ -74,10 +83,13 @@ public class TaskController extends MainController {
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody TaskDTO task,
             BindingResult bindingResult) {
+        log.info("Creating new task: {} by user: {}", task, userDetails.getUsername());
+        TaskDTO createdTask = taskEntityMapper.getDTO(taskService.create(task));
+        log.debug("Task created: {}", createdTask);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(taskEntityMapper.getDTO(taskService.create(task)));
+                .body(createdTask);
     }
 
     @PutMapping("/{id}")
@@ -87,11 +99,14 @@ public class TaskController extends MainController {
             @PathVariable Long id,
             @Valid @RequestBody TaskDTO task,
             BindingResult bindingResult) {
+        log.info("Updating task with ID: {} by user: {}", id, userDetails.getUsername());
         task.setId(id);
+        TaskDTO updatedTask = taskEntityMapper.getDTO(taskService.update(task, userDetails));
+        log.debug("Task updated: {}", updatedTask);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(taskEntityMapper.getDTO(taskService.update(task, userDetails)));
+                .body(updatedTask);
     }
 
     @DeleteMapping("/{id}")
@@ -99,7 +114,9 @@ public class TaskController extends MainController {
     public ResponseEntity<Boolean> deleteTask(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
+        log.info("Deleting task with ID: {} by user: {}", id, userDetails.getUsername());
         taskService.deleteById(id);
+        log.info("Task with ID: {} successfully deleted", id);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,8 +124,9 @@ public class TaskController extends MainController {
     }
 
     private Long getUserIdFromPrincipal(UserDetails userDetails) {
-        UserEntity u = (UserEntity) userDetails;
-        return u.getId();
+        Long userId = ((UserEntity) userDetails).getId();
+        log.debug("Extracted user ID: {} from principal", userId);
+        return userId;
     }
 
 }

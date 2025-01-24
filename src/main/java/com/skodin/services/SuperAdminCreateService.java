@@ -5,27 +5,38 @@ import com.skodin.enums.Role;
 import com.skodin.repositories.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 class SuperAdminCreateService {
 
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     private final String EMAIl = "admin@gmail.com";
     private final String PASSWORD = "rootroot";
-    private final UserService userService;
 
     @PostConstruct
     void createAdmin() {
-        if (userRepository.findFirstByRole(Role.ADMIN).isEmpty()) {
-            UserEntity user = new UserEntity
-                    (0L, EMAIl, passwordEncoder.encode(PASSWORD), Role.ADMIN, "enable");
+        log.info("Checking if an admin user already exists...");
 
-            userService.saveAndFlush(user);
+        if (userService.findFirstByRole(Role.ADMIN).isEmpty()) {
+            log.info("No admin user found. Creating a new admin user...");
+
+            UserEntity user = new UserEntity(0L, EMAIl, passwordEncoder.encode(PASSWORD), Role.ADMIN, "enable");
+
+            try {
+                userService.saveAndFlush(user);
+                log.info("Super Admin created successfully with email: {}", EMAIl);
+            } catch (Exception e) {
+                log.error("Failed to create Super Admin. Error: {}", e.getMessage(), e);
+            }
+        } else {
+            log.info("An admin user already exists. Skipping creation.");
         }
     }
 }

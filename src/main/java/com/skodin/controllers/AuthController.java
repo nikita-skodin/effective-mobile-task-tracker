@@ -33,36 +33,67 @@ public class AuthController extends MainController {
             @Valid @RequestBody RegisterRequest request,
             BindingResult bindingResult
     ) {
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(authenticationService.register(request));
+        log.info("Attempting to register a new user by admin: {}", userDetails.getUsername());
+        try {
+            boolean result = authenticationService.register(request);
+            log.info("User registered successfully: {}", request.getEmail());
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(result);
+        } catch (Exception e) {
+            log.error("Error during user registration: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        log.info("Attempting to authenticate user: {}", request.getEmail());
+        try {
+            AuthenticationResponse response = authenticationService.authenticate(request);
+            log.info("User authenticated successfully: {}", request.getEmail());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Authentication failed for user: {}. Error: {}", request.getEmail(), e.getMessage(), e);
+            throw e;
+        }
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthenticationResponse> refresh(
             @RequestBody String refreshToken
     ) {
-        return ResponseEntity.ok(authenticationService.refresh(refreshToken));
+        log.info("Attempting to refresh token");
+        try {
+            AuthenticationResponse response = authenticationService.refresh(refreshToken);
+            log.info("Token refreshed successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error during token refresh: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @GetMapping("/enable/{code}")
     public ResponseEntity<String> enable(
             @PathVariable String code) {
-        boolean activationResult = authenticationService.enable(code);
-        if (activationResult) {
-            return ResponseEntity.ok("Account successfully activated");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid activation code");
+        log.info("Attempting to enable account with activation code: {}", code);
+        try {
+            boolean activationResult = authenticationService.enable(code);
+            if (activationResult) {
+                log.info("Account successfully activated with code: {}", code);
+                return ResponseEntity.ok("Account successfully activated");
+            } else {
+                log.warn("Invalid activation code: {}", code);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid activation code");
+            }
+        } catch (Exception e) {
+            log.error("Error during account activation: {}", e.getMessage(), e);
+            throw e;
         }
     }
 
 }
-

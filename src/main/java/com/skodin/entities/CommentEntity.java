@@ -6,6 +6,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Getter
 @Setter
 @Builder
@@ -19,10 +20,12 @@ public class CommentEntity {
     private String content;
 
     @ManyToOne()
+    @ToString.Exclude
     @JoinColumn(name = "author_id")
     private UserEntity author;
 
     @ManyToOne()
+    @ToString.Exclude
     @JoinColumn(name = "task_id")
     private TaskEntity task;
 }

@@ -9,8 +9,7 @@ import com.skodin.exceptions.BadRequestException;
 import com.skodin.repositories.UserRepository;
 import com.skodin.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +19,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -32,7 +31,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
 
     public boolean register(RegisterRequest request) {
-        LOGGER.info("Attempt to register user: {}", request.getEmail());
+        log.info("Attempt to register user: {}", request.getEmail());
         try {
             if (userRepository.findByEmail(request.getEmail()).isPresent()) {
                 throw new BadRequestException("User already exists");
@@ -45,16 +44,16 @@ public class AuthenticationService {
 
             userService.saveAndFlush(user);
 
-            LOGGER.info("User: {} registered", request.getEmail());
+            log.info("User: {} registered", request.getEmail());
             return true;
         } catch (Exception e) {
-            LOGGER.error("Exception while registration user {}", request.getEmail());
+            log.error("Exception while registration user {}", request.getEmail());
             throw e;
         }
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        LOGGER.info("Attempt to authenticate user: {}", request.getEmail());
+        log.info("Attempt to authenticate user: {}", request.getEmail());
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -63,7 +62,7 @@ public class AuthenticationService {
             );
         } catch (AuthenticationException e) {
             if (e instanceof DisabledException) {
-                LOGGER.warn("authentication for user : {} failed. Account is disable", request.getEmail());
+                log.warn("authentication for user : {} failed. Account is disable", request.getEmail());
                 throw new AccountDisableException("Account is disable");
             }
             throw e;
@@ -75,17 +74,17 @@ public class AuthenticationService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        LOGGER.info("User: {} authenticated", request.getEmail());
+        log.info("User: {} authenticated", request.getEmail());
         return new AuthenticationResponse(accessToken, refreshToken);
     }
 
     public AuthenticationResponse refresh(String refreshToken) {
-        LOGGER.info("Attempt to refresh token: {}", refreshToken);
+        log.info("Attempt to refresh token: {}", refreshToken);
         return jwtService.refreshUserToken(refreshToken);
     }
 
     public Boolean enable(String code) {
-        LOGGER.info("Attempt to enable code: {}", code);
+        log.info("Attempt to enable code: {}", code);
 
         if (code == null) {
             throw new BadRequestException("code cannot be null");
@@ -94,7 +93,7 @@ public class AuthenticationService {
         UserEntity user = userService.findByActivationCode(code);
 
         userService.updateEnable(user);
-        LOGGER.info("User: {} successfully enabled", user.getEmail());
+        log.info("User: {} successfully enabled", user.getEmail());
         return true;
     }
 }

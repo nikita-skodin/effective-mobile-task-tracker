@@ -35,12 +35,22 @@ public class CommentController extends MainController {
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody CommentDTO commentDTO,
             BindingResult bindingResult) {
-        commentDTO.setAuthorId(((UserEntity) userDetails).getId());
+        log.info("Attempting to create a comment for task ID: {} by user: {}", commentDTO.getTaskId(), userDetails.getUsername());
+        try {
+            commentDTO.setAuthorId(((UserEntity) userDetails).getId());
+            log.debug("Author ID set to: {}", commentDTO.getAuthorId());
 
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(entityMapper.getDTO(commentService.create(commentDTO)));
+            CommentDTO createdComment = entityMapper.getDTO(commentService.create(commentDTO));
+            log.info("Comment created successfully for task ID: {}", commentDTO.getTaskId());
+
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(createdComment);
+        } catch (Exception e) {
+            log.error("Error occurred while creating a comment for task ID: {}. Error: {}", commentDTO.getTaskId(), e.getMessage(), e);
+            throw e;
+        }
     }
 
 }
