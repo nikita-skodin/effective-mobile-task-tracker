@@ -2,6 +2,7 @@ package com.skodin.controllers;
 
 import com.skodin.DTOs.TaskDTO;
 import com.skodin.entities.TaskEntity;
+import com.skodin.entities.UserEntity;
 import com.skodin.mappers.EntityMapper;
 import com.skodin.services.TaskService;
 import jakarta.validation.Valid;
@@ -43,6 +44,30 @@ public class TaskController extends MainController {
         return ResponseEntity.ok(taskEntityMapper.getDTO(taskService.findById(id)));
     }
 
+    @GetMapping("/author")
+    public ResponseEntity<Page<TaskDTO>> getTasksByAuthor(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Pageable pageable,
+            @RequestParam(required = false) String filter
+    ) {
+        Long authorId = getUserIdFromPrincipal(userDetails); // Метод для получения ID пользователя
+        Page<TaskEntity> tasksPage = taskService.findTasksByAuthor(authorId, pageable, filter);
+        Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
+        return ResponseEntity.ok(tasksDTOPage);
+    }
+
+    @GetMapping("/assignee")
+    public ResponseEntity<Page<TaskDTO>> getTasksByAssignee(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Pageable pageable,
+            @RequestParam(required = false) String filter
+    ) {
+        Long assigneeId = getUserIdFromPrincipal(userDetails); // Метод для получения ID пользователя
+        Page<TaskEntity> tasksPage = taskService.findTasksByAssignee(assigneeId, pageable, filter);
+        Page<TaskDTO> tasksDTOPage = tasksPage.map(taskEntityMapper::getDTO);
+        return ResponseEntity.ok(tasksDTOPage);
+    }
+
     @PostMapping
     @PreAuthorize("@CheckPermissionsService.permitAdmin(#userDetails)")
     public ResponseEntity<TaskDTO> createTask(
@@ -79,6 +104,11 @@ public class TaskController extends MainController {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(true);
+    }
+
+    private Long getUserIdFromPrincipal(UserDetails userDetails) {
+        UserEntity u = (UserEntity) userDetails;
+        return u.getId();
     }
 
 }

@@ -69,6 +69,20 @@ public class TaskService {
         return entity;
     }
 
+    public Page<TaskEntity> findTasksByAuthor(Long authorId, Pageable pageable, String filter) {
+        if (filter != null && !filter.isEmpty()) {
+            return taskRepository.findByAuthorIdAndFilter(authorId, filter, pageable);
+        }
+        return taskRepository.findByAuthorId(authorId, pageable);
+    }
+
+    public Page<TaskEntity> findTasksByAssignee(Long assigneeId, Pageable pageable, String filter) {
+        if (filter != null && !filter.isEmpty()) {
+            return taskRepository.findByAssigneeIdAndFilter(assigneeId, filter, pageable);
+        }
+        return taskRepository.findByAssigneeId(assigneeId, pageable);
+    }
+
     @Transactional
     public void deleteById(Long id) {
         if (!taskRepository.existsById(id)) {
