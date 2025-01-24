@@ -17,8 +17,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -37,8 +35,9 @@ public class AuthenticationService {
                 throw new BadRequestException("User already exists");
             }
 
+            // change activationCode to random UUID for implement the activation mechanism
             UserEntity user = new UserEntity
-                    (0L, request.getEmail(), request.getPassword(), request.getRole(), UUID.randomUUID().toString());
+                    (0L, request.getEmail(), request.getPassword(), request.getRole(), "enabled");
 
             user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -83,6 +82,7 @@ public class AuthenticationService {
         return jwtService.refreshUserToken(refreshToken);
     }
 
+    // for implement the activation mechanism
     public Boolean enable(String code) {
         log.info("Attempt to enable code: {}", code);
 

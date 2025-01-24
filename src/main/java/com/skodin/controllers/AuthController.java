@@ -77,7 +77,8 @@ public class AuthController extends MainController {
         }
     }
 
-    @GetMapping("/enable/{code}")
+    // for implement the activation mechanism
+    @GetMapping("/enable/{code} ")
     public ResponseEntity<String> enable(
             @PathVariable String code) {
         log.info("Attempting to enable account with activation code: {}", code);
