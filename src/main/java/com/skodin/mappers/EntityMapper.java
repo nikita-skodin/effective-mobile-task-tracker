@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 public class EntityMapper {
 
     private final ModelMapper modelMapper;
-    private final UserService userService;
+    private final com.skodin.services.UserService userService;
     private final TaskService taskService;
 
-    public EntityMapper(@Lazy TaskService taskService, UserService userService, ModelMapper modelMapper) {
+    public EntityMapper(@Lazy com.skodin.services.TaskService taskService, UserService userService, ModelMapper modelMapper) {
         this.taskService = taskService;
         this.userService = userService;
         this.modelMapper = modelMapper;

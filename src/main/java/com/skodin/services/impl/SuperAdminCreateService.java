@@ -1,8 +1,8 @@
-package com.skodin.services;
+package com.skodin.services.impl;
 
 import com.skodin.entities.UserEntity;
 import com.skodin.enums.Role;
-import com.skodin.repositories.UserRepository;
+import com.skodin.services.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
