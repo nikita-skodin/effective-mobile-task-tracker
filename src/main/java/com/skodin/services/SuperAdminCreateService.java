@@ -1,8 +1,8 @@
-package com.skodin.services.impl;
+package com.skodin.services;
 
 import com.skodin.entities.UserEntity;
 import com.skodin.enums.Role;
-import com.skodin.services.UserService;
+import com.skodin.util.EnvUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,8 +17,8 @@ class SuperAdminCreateService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    private final String EMAIl = "admin@gmail.com";
-    private final String PASSWORD = "rootroot";
+    private final String EMAIl = EnvUtils.getEnvOrDefault("SUPER_ADMIN_EMAIL", "admin@gmail.com");
+    private final String PASSWORD = EnvUtils.getEnvOrDefault("SUPER_ADMIN_PASSWORD", "rootroot");
 
     @PostConstruct
     void createAdmin() {

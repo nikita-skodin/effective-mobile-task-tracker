@@ -70,7 +70,7 @@ public class TaskServiceDefault implements TaskService {
             log.info("Admin role detected, task updated for task id: {}", taskDTO.getId());
         }
 
-        return taskRepository.save(entity);  // Save the updated entity
+        return taskRepository.save(entity);
     }
 
     @Override
