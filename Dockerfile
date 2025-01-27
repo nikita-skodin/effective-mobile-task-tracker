@@ -1,5 +1,4 @@
-FROM openjdk:17
-
-ADD /target/my-task-tracker-0.0.1-SNAPSHOT.jar back.jar
-
-ENTRYPOINT ["java", "-jar", "back.jar"]
+FROM openjdk:17-jdk-alpine
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
