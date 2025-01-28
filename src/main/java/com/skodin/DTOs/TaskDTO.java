@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.skodin.enums.Priority;
 import com.skodin.enums.Status;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +26,6 @@ public class TaskDTO {
     Long id;
 
     @NotBlank(message = "title cannot be blank")
-    @Max(value = 100, message = "title length must be less than 100 chars")
     String title;
 
     @NotBlank(message = "description cannot be blank")
