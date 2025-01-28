@@ -8,7 +8,7 @@ services:
     hostname: postgres-task-tracker
     container_name: postgres-task-tracker
     ports:
-      - "${SPRING_DATASOURCE_PORT:-5432}:5432
+      - ${SPRING_DATASOURCE_PORT:-5432}:5432
     networks:
       - main_network
     volumes:
