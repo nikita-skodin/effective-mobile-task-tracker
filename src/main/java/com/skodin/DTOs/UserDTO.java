@@ -3,10 +3,7 @@ package com.skodin.DTOs;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.skodin.enums.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -30,6 +27,7 @@ public class UserDTO {
     @Max(value = 50, message = "email length must be less than 50 chars")
     String email;
 
+    @NotNull(message = "role cannot be null")
     Role role;
 
     List<TaskDTO> authoredTasks = new ArrayList<>();

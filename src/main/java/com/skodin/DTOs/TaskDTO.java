@@ -33,7 +33,10 @@ public class TaskDTO {
     @NotBlank(message = "description cannot be blank")
     String description;
 
+    @NotNull(message = "status cannot be null")
     Status status;
+
+    @NotNull(message = "priority cannot be null")
     Priority priority;
 
     @Min(1L)
